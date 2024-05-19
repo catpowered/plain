@@ -2,9 +2,9 @@ defmodule Plain do
   defp base_url, do: "https://core-api.uk.plain.com/graphql/v1"
   defp token, do: Application.get_env(:plain, :token)
 
-  @customByIdQuery "queries/getCustomerById.graphql" |> File.read!()
+  @customerByIdQuery "queries/getCustomerById.graphql" |> File.read!()
   def getCustomerById(customer_id) do
-    send_request(@customByIdQuery, %{"customerId" => customer_id})
+    send_request(@customerByIdQuery, %{"customerId" => customer_id})
   end
 
   defp send_request(query, variables) do
