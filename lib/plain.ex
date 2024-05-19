@@ -64,7 +64,7 @@ defmodule Plain do
     })
   end
 
-  @removeCustomerFromTenantMutation "mutations/addCustomerToTenant.graphql" |> File.read!()
+  @removeCustomerFromTenantMutation "mutations/removeCustomerFromTenant.graphql" |> File.read!()
   @spec removeCustomerFromTenant(String.t(), list(String.t())) :: {:ok, map()} | {:error, any()}
   @doc """
   # Remove customers from tenants
