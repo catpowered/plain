@@ -87,6 +87,33 @@ defmodule Plain do
     })
   end
 
+  @createCustomerMutation "mutations/upsertTenant.graphql" |> File.read!()
+  @spec createCustomer() :: {:ok, map()} | {:error, any()}
+  @doc """
+  # Upserting customers
+  Creating and updating customers is handled via a single API called `upsertCustomer`. You will find this name in both the API and this SDK.
+
+  When you upsert a customer, you define:
+  1. The identifier: This is the field you’d like to use to select the customer and is one of
+    - `emailAddress`: This is the customer’s email address. Within Plain email addresses are unique to customers.
+    - `customerId`: This is Plain’s customer ID. Implicitly if you use this as an identifier you will only be updating the customer since the customer can’t have an id unless it already exists.
+    - `externalId`: This is the customer’s id in your systems. If you previously set this it can be a powerful way of syncing customer details from your backend with Plain.
+  2. The customer details you’d like to use if creating the customer.
+  3. The customer details you’d like to update if the customer already exists.
+
+  When upserting a customer you will always get back a customer or an error.
+
+  ​
+  ## Upserting a customer
+
+  This operation requires the following permissions:
+  - `customer:create`
+  - `customer:edit`
+  """
+  def createCustomer() do
+    send_request(@createCustomerMutation, %{})
+  end
+
   @customerByIdQuery "queries/getCustomerById.graphql" |> File.read!()
   @spec getCustomerById(String.t()) :: {:ok, map()} | {:error, any()}
   @doc """
