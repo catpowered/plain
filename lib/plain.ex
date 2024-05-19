@@ -4,6 +4,17 @@ defmodule Plain do
 
   @createTenantMutation "mutations/upsertTenant.graphql" |> File.read!()
   @spec createTenant(String.t(), String.t(), String.t() | nil) :: {:ok, map()} | {:error, any()}
+  @doc """
+  # Upserting tenants
+
+  When upserting a tenant you need to specify an `externalId` which matches the id of the tenant in your own backend.
+
+  For example if your product is structured in teams, then when creating a tenant for a team you’d use the team’s id as the `externalId`.
+
+  To upsert a tenant you need the following permissions:
+  - `tenant:read`
+  - `tenant:create`
+  """
   def createTenant(identifier, name, url) do
     send_request(@createTenantMutation, %{
       "input" => %{
@@ -27,8 +38,63 @@ defmodule Plain do
   @spec createTenant(String.t(), String.t()) :: {:ok, map()} | {:error, any()}
   def createTenant(identifier, name), do: createTenant(identifier, name, nil)
 
+  @addCustomerToTenantMutation "mutations/addCustomerToTenant.graphql" |> File.read!()
+  @spec addCustomerToTenant(String.t(), list(String.t())) :: {:ok, map()} | {:error, any()}
+  @doc """
+  # Add customers to tenants
+
+  You can add a customer to multiple tenants.
+
+  When selecting the customer you can chose how to identify them. This SDK uses the customer’s plain id.
+
+  For this mutation you need the following permissions:
+
+  - `customer:edit`
+  - `customerTenantMembership:create`
+  """
+  def addCustomerToTenant(customerId, tenantIds) do
+    send_request(@addCustomerToTenantMutation, %{
+      "input" => %{
+        "customerIdentifier" => %{
+          "customerId" => customerId
+        },
+        "tenantIdentifiers" => Enum.map(tenantIds, &%{"externalId" => &1})
+      }
+    })
+  end
+
+  @removeCustomerFromTenantMutation "mutations/addCustomerToTenant.graphql" |> File.read!()
+  @spec removeCustomerFromTenant(String.t(), list(String.t())) :: {:ok, map()} | {:error, any()}
+  @doc """
+  # Remove customers from tenants
+
+  You can remove customers from multiple tenants in one API call.
+
+  When selecting the customer you can chose how to identify them. This SDK uses the customer’s plain id.
+
+  For this mutation you need the following permissions:
+  - `customer:edit`
+  - `customerTenantMembership:delete`
+  """
+  def removeCustomerFromTenant(customerId, tenantIds) do
+    send_request(@removeCustomerFromTenantMutation, %{
+      "input" => %{
+        "customerIdentifier" => %{
+          "customerId" => customerId
+        },
+        "tenantIdentifiers" => Enum.map(tenantIds, &%{"externalId" => &1})
+      }
+    })
+  end
+
   @customerByIdQuery "queries/getCustomerById.graphql" |> File.read!()
   @spec getCustomerById(String.t()) :: {:ok, map()} | {:error, any()}
+  @doc """
+  If you already have the ID of a customer from within Plain or one of our other endpoints you can fetch more details about them using getCustomerById in the SDK.
+
+  These endpoints require the following permissions:
+  - `customer:read`
+  """
   def getCustomerById(customer_id) do
     send_request(@customerByIdQuery, %{"customerId" => customer_id})
   end

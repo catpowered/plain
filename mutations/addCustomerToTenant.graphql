@@ -1,0 +1,14 @@
+mutation ($input: AddCustomerToTenantsInput!) {
+  addCustomerToTenants(input: $input) {
+    error {
+      message
+      type
+      code
+      fields {
+        field
+        message
+        type
+      }
+    }
+  }
+}

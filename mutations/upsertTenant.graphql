@@ -1,4 +1,4 @@
-mutation upsertTenant($input: UpsertTenantInput!) {
+mutation ($input: UpsertTenantInput!) {
   upsertTenant(input: $input) {
     tenant {
       id
