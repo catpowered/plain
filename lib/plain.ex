@@ -2,8 +2,9 @@ defmodule Plain do
   defp base_url, do: "https://core-api.uk.plain.com/graphql/v1"
   defp token, do: Application.get_env(:plain, :token)
 
-  @createTenantMutation "mutations/upsertTenant.graphql" |> File.read!()
-  @spec createTenant(String.t(), String.t(), String.t() | nil) :: {:ok, map()} | {:error, any()}
+  @createOrUpdateTenantMutation "mutations/upsertTenant.graphql" |> File.read!()
+  @spec createOrUpdateTenant(String.t(), String.t(), String.t() | nil) ::
+          {:ok, map()} | {:error, any()}
   @doc """
   # Upserting tenants
 
@@ -15,8 +16,8 @@ defmodule Plain do
   - `tenant:read`
   - `tenant:create`
   """
-  def createTenant(identifier, name, url) do
-    send_request(@createTenantMutation, %{
+  def createOrUpdateTenant(identifier, name, url) do
+    send_request(@createOrUpdateTenantMutation, %{
       "input" => %{
         "identifier" => %{
           "externalId" => identifier
@@ -35,8 +36,8 @@ defmodule Plain do
     })
   end
 
-  @spec createTenant(String.t(), String.t()) :: {:ok, map()} | {:error, any()}
-  def createTenant(identifier, name), do: createTenant(identifier, name, nil)
+  @spec createOrUpdateTenant(String.t(), String.t()) :: {:ok, map()} | {:error, any()}
+  def createOrUpdateTenant(identifier, name), do: createOrUpdateTenant(identifier, name, nil)
 
   @addCustomerToTenantMutation "mutations/addCustomerToTenant.graphql" |> File.read!()
   @spec addCustomerToTenant(String.t(), list(String.t())) :: {:ok, map()} | {:error, any()}
@@ -87,8 +88,8 @@ defmodule Plain do
     })
   end
 
-  @createCustomerMutation "mutations/upsertTenant.graphql" |> File.read!()
-  @spec createCustomer() :: {:ok, map()} | {:error, any()}
+  @createOrUpdateCustomerMutation "mutations/upsertCustomer.graphql" |> File.read!()
+  @spec createOrUpdateCustomer() :: {:ok, map()} | {:error, any()}
   @doc """
   # Upserting customers
   Creating and updating customers is handled via a single API called `upsertCustomer`. You will find this name in both the API and this SDK.
@@ -110,8 +111,8 @@ defmodule Plain do
   - `customer:create`
   - `customer:edit`
   """
-  def createCustomer() do
-    send_request(@createCustomerMutation, %{})
+  def createOrUpdateCustomer() do
+    send_request(@createOrUpdateCustomerMutation, %{})
   end
 
   @customerByIdQuery "queries/getCustomerById.graphql" |> File.read!()
