@@ -89,7 +89,8 @@ defmodule Plain do
   end
 
   @createOrUpdateCustomerMutation "mutations/upsertCustomer.graphql" |> File.read!()
-  @spec createOrUpdateCustomer() :: {:ok, map()} | {:error, any()}
+  @spec createOrUpdateCustomer(String.t(), String.t(), String.t(), String.t() | nil) ::
+          {:ok, map()} | {:error, any()}
   @doc """
   # Upserting customers
   Creating and updating customers is handled via a single API called `upsertCustomer`. You will find this name in both the API and this SDK.
@@ -111,8 +112,46 @@ defmodule Plain do
   - `customer:create`
   - `customer:edit`
   """
-  def createOrUpdateCustomer() do
-    send_request(@createOrUpdateCustomerMutation, %{})
+  def createOrUpdateCustomer(email, externalIdentifier, fullName, name) do
+    send_request(@createOrUpdateCustomerMutation, %{
+      "input" => %{
+        "identifier" => %{
+          "externalId" => externalIdentifier
+        },
+        "onCreate" => %{
+          "externalId" => externalIdentifier,
+          "fullName" => fullName,
+          "shortName" =>
+            if name != nil do
+              name
+            else
+              nil
+            end,
+          "email" => %{
+            "email" => email,
+            "isVerified" => false
+          }
+        },
+        "onUpdate" => %{
+          "fullName" => %{
+            "value" => fullName
+          },
+          "shortName" =>
+            if name != nil do
+              %{"value" => name}
+            else
+              nil
+            end,
+          "email" => %{
+            "email" => email,
+            "isVerified" => true
+          },
+          "externalId" => %{
+            "value" => externalIdentifier
+          }
+        }
+      }
+    })
   end
 
   @customerByIdQuery "queries/getCustomerById.graphql" |> File.read!()
