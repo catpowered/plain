@@ -1,0 +1,70 @@
+query ($customerId: ID!) {
+  customer(customerId: $customerId) {
+    id
+    externalId
+    fullName
+    shortName
+    email {
+      email
+      isVerified
+      verifiedAt {
+        unixTimestamp
+      }
+    }
+    avatarUrl
+    assignedToUser {
+      userId
+    }
+    assignedAt {
+      unixTimestamp
+    }
+    company {
+      id
+    }
+    createdBy {
+      __typename
+      ... on UserActor {
+        userId
+      }
+      ... on SystemActor {
+        systemId
+      }
+      ... on MachineUserActor {
+        machineUserId
+      }
+    }
+    createdAt {
+      unixTimestamp
+    }
+    updatedBy {
+      __typename
+      ... on UserActor {
+        userId
+      }
+      ... on SystemActor {
+        systemId
+      }
+      ... on MachineUserActor {
+        machineUserId
+      }
+    }
+    updatedAt {
+      unixTimestamp
+    }
+    markedAsSpamBy {
+      __typename
+      ... on UserActor {
+        userId
+      }
+      ... on SystemActor {
+        systemId
+      }
+      ... on MachineUserActor {
+        machineUserId
+      }
+    }
+    markedAsSpamAt {
+      unixTimestamp
+    }
+  }
+}
