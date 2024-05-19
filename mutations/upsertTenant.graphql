@@ -1,0 +1,20 @@
+mutation upsertTenant($input: UpsertTenantInput!) {
+  upsertTenant(input: $input) {
+    tenant {
+      id
+      externalId
+      name
+      url
+    }
+    error {
+      message
+      type
+      code
+      fields {
+        field
+        message
+        type
+      }
+    }
+  }
+}
