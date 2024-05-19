@@ -2,10 +2,12 @@ defmodule Plain.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/CatPowered/plain"
+  @description "SDK for the Plain.com GraphQL API"
 
   def project do
     [
       app: :plain,
+      description: @description,
       version: "0.1.0",
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
@@ -31,7 +33,16 @@ defmodule Plain.MixProject do
     [
       maintainers: ["Harry Bairstow"],
       licenses: ["MIT"],
-      links: %{"GitHub" => @source_url}
+      links: %{"GitHub" => @source_url},
+      files: [
+        "lib",
+        "mutations",
+        "queries",
+        ".formatter.exs",
+        "mix.exs",
+        "README*",
+        "LICENSE*"
+      ]
     ]
   end
 end
