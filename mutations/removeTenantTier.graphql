@@ -1,0 +1,14 @@
+mutation ($input: RemoveMembersFromTierInput!) {
+  removeMembersFromTier(input: $input) {
+    error {
+      message
+      type
+      code
+      fields {
+        field
+        message
+        type
+      }
+    }
+  }
+}

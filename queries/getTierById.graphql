@@ -1,0 +1,8 @@
+query ($tierId: ID!) {
+  tier(tierId: $tierId) {
+    id
+    externalId
+    name
+    defaultPriority
+  }
+}

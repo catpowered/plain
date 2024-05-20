@@ -1,0 +1,55 @@
+mutation ($input: CreateTierInput!) {
+  createTier(input: $input) {
+    tier {
+      id
+      name
+      externalId
+      color
+      isDefault
+      defaultThreadPriority
+      serviceLevelAgreements {
+        id
+      }
+      createdAt {
+        unixTimestamp
+      }
+      createdBy {
+        __typename
+        ... on UserActor {
+          userId
+        }
+        ... on SystemActor {
+          systemId
+        }
+        ... on MachineUserActor {
+          machineUserId
+        }
+      }
+      updatedAt {
+        unixTimestamp
+      }
+      updatedBy {
+        __typename
+        ... on UserActor {
+          userId
+        }
+        ... on SystemActor {
+          systemId
+        }
+        ... on MachineUserActor {
+          machineUserId
+        }
+      }
+    }
+    error {
+      message
+      type
+      code
+      fields {
+        field
+        message
+        type
+      }
+    }
+  }
+}

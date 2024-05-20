@@ -166,6 +166,74 @@ defmodule Plain do
     send_request(@customerByIdQuery, %{"customerId" => customer_id})
   end
 
+  @tierByIdQuery "queries/getTierById.graphql" |> File.read!()
+  @spec getTierById(String.t()) :: {:ok, map()} | {:error, any()}
+  @doc """
+  If you know the tiers’s ID in Plain you can use this method to fetch the tier.
+
+  For this query you need the following permission:
+  - `tier:read`
+  """
+  def getTierById(tier_id) do
+    send_request(@tierByIdQuery, %{"tierId" => tier_id})
+  end
+
+  @createTierMutation "mutations/createTier.graphql" |> File.read!()
+  @spec createTier(String.t(), String.t(), String.t(), integer(), boolean()) ::
+          {:ok, map()} | {:error, any()}
+  def createTier(name, externalId, color, defaultThreadPriority, isDefault) do
+    send_request(@createTierMutation, %{
+      "input" => %{
+        "name" => name,
+        "externalId" => externalId,
+        "color" => color,
+        "defaultThreadPriority" => defaultThreadPriority,
+        "memberIdentifiers" => [],
+        "isDefault" => isDefault
+      }
+    })
+  end
+
+  @updateTenantTierMutation "mutations/updateTenantTier.graphql" |> File.read!()
+  @spec updateTenantTier(String.t(), String.t()) ::
+          {:ok, map()} | {:error, any()}
+  @doc """
+  # Update tenant tier
+  If you want to explicitly set the tier for a tenant you can do so using this mutation.
+
+  The `tierIdentifier` and `tenantIdentifier` refer to the IDs given by Plain.
+
+  For this mutation you need the following permissions:
+    - `tierMembership:read`
+    - `tierMembership:create`
+  """
+  def updateTenantTier(tierIdentifier, tenantIdentifier) do
+    send_request(@updateTenantTierMutation, %{
+      "input" => %{
+        "tierIdentifier" => %{
+          "tierId" => tierIdentifier
+        },
+        "tenantIdentifier" => %{
+          "tenantId" => tenantIdentifier
+        }
+      }
+    })
+  end
+
+  @removeTenantTierMutation "mutations/removeTenantTier.graphql" |> File.read!()
+  @spec removeTenantTier(String.t()) :: {:ok, map()} | {:error, any()}
+  def removeTenantTier(tenantIdentifier) do
+    send_request(@removeTenantTierMutation, %{
+      "input" => %{
+        "memberIdentifiers" => [
+          %{
+            "tenantId" => tenantIdentifier
+          }
+        ]
+      }
+    })
+  end
+
   @spec send_request(String.t(), map()) :: {:ok, map()} | {:error, any()}
   defp send_request(query, variables) do
     req =

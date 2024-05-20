@@ -1,0 +1,18 @@
+mutation ($input: UpdateTenantTierInput!) {
+  updateTenantTier(input: $input) {
+    tenantTierMembership {
+      id
+      tierId
+    }
+    error {
+      message
+      type
+      code
+      fields {
+        field
+        message
+        type
+      }
+    }
+  }
+}
